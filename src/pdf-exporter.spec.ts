@@ -31,7 +31,7 @@ describe('generatePdf', () => {
         fakeDelta = { ops: [{ insert: '\n' }] };
         fakeConfig = { };
         fakeStream = new FakeStream();
-        mockPdfBuilder.prototype.getPdfStream.mockImplementation(() => fakeStream);
+        mockPdfBuilder.prototype.getPdfStream.mockImplementation(() => new Promise(() => fakeStream));
     });
 
     it('should be defined', () => {

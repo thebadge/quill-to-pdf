@@ -2,7 +2,7 @@ import { Style } from "./interfaces";
 
 export let styles: Style = {
     normal: {
-        font: 'Times-Roman',
+        font: 'Helvetica',
         fontSize: 12,
         baseIndent: 72,
         levelIndent: 0,
@@ -20,7 +20,7 @@ export let styles: Style = {
         levelIndent: 0
     },
     block_quote: {
-        font: 'Times-Italic',
+        font: 'Helvetica-Oblique',
         fontSize: 12,
         italics: true,
         baseIndent: 72,
@@ -37,13 +37,13 @@ export let styles: Style = {
         levelIndent: 0
     },
     list_paragraph: {
-        font: 'Times-Roman',
+        font: 'Helvetica',
         fontSize: 12,
         baseIndent: 50,
         levelIndent: 25
     },
     citation: {
-        font: 'Times-Roman',
+        font: 'Helvetica',
         fontSize: 12,
         baseIndent: 72,
         levelIndent: 0
