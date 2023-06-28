@@ -23,6 +23,13 @@ const quillDelta = quillInstance.getContents();
 const pdfBlob = await pdfExporter.generatePdf(quillDelta);
 ```
 
+Or if you want it on Base64 format, you can use `generatePdfBase64()`
+
+```javascript
+const quillDelta = quillInstance.getContents();
+const pdfBase64String = await pdfExporter.generatePdfBase64(quillDelta);
+```
+
 The `quillInstance` refers to the object created by `new Quill()`. The `pdfExporter` refers to the default export of the `quill-to-pdf` package, which can be imported as follows: 
 
 `import { pdfExporter } from 'quill-to-pdf';`
