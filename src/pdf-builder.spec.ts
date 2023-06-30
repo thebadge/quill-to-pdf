@@ -6,9 +6,6 @@ jest.mock('quilljs-parser');
 import { parseQuillDelta } from 'quilljs-parser';
 import PDFDocument from './pdfkit.standalone';
 import { FakeStream, MockPDFDocument } from './test-utilities';
-// Polyfill "window.fetch" used in the React component.
-import 'whatwg-fetch'
-global.XMLHttpRequest = require('xhr2');
 
 type TypePDFDocument = typeof PDFDocument & {
     new (...args: any[]): any;
