@@ -1,5 +1,5 @@
 {
-  "name": "thebadge-quill-to-pdf",
+  "name": "@thebadge/quill-to-pdf",
   "version": "1.0.7",
   "description": "Create a PDF from a QuillJS delta",
   "main": "./dist/main.js",
