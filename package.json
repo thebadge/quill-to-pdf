@@ -1,5 +1,5 @@
 {
-  "name": "quill-to-pdf",
+  "name": "thebadge-quill-to-pdf",
   "version": "1.0.7",
   "description": "Create a PDF from a QuillJS delta",
   "main": "./dist/main.js",
@@ -7,7 +7,8 @@
   "scripts": {
     "test": "jest",
     "build": "webpack",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "deploy": "npm publish"
   },
   "repository": {
     "type": "git",
