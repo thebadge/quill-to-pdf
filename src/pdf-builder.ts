@@ -23,16 +23,27 @@ class PdfBuilder {
 
 
     // Starts the PDF stream which will contain the PDF document output
-    getPdfStream(doc: any, delta: RawOrParsedDelta, config?: Config) {
+    async getPdfStream(doc: any, delta: RawOrParsedDelta, config?: Config) {
         this.resetLevelTrackers();
         this.resetStyles();
         if (config && config.styles) {
             this.configureStyles(config);
         }
         const parsed = this.prepareInput(delta);
-        doc = new PDFDocument() as any;
+        // @ts-ignore
+        doc = new PDFDocument({
+            permissions: {
+                printing: "highResolution",
+            },
+            margins: {
+                top: 30,
+                bottom: 30,
+                left: 72,
+                right: 72
+            }
+        }) as any;
         const stream = doc.pipe(BlobStream() as any);
-        this.buildPdf(parsed, doc);
+        await this.buildPdf(parsed, doc);
         doc.end();
         return stream;
     }
@@ -42,28 +53,28 @@ class PdfBuilder {
 
     // This is the starting point for building the PDF output
     // It sends each paragraph of each delta out for processing.
-    buildPdf(parsedDeltas: ParsedQuillDelta[], doc: any): void {
+    async buildPdf(parsedDeltas: ParsedQuillDelta[], doc: any): Promise<void> {
         for (const delta of parsedDeltas) {
             for (const paragraph of delta.paragraphs) {
-                this.buildParagraph(paragraph, doc);
-            };
-        };
+                await this.buildParagraph(paragraph, doc);
+            }
+        }
     }
 
 
     // This is the first step for every paragraph in the document
     // This routes paragraphs to the appropriate handler based on whether
     // the paragraph is an embed, formatted, or not formatted.
-    buildParagraph(paragraph: QParagraph, doc: any): void {
+    async buildParagraph(paragraph: QParagraph, doc: any): Promise<void> {
         doc.moveDown();
         // handle embeds
         if (paragraph.embed) {
             this.resetLevelTrackers();
-            this.buildEmbed(paragraph.embed, doc);
-        // handle paragraphs with line attributes
+            await this.buildEmbed(paragraph.embed, doc);
+            // handle paragraphs with line attributes
         } else if (paragraph.attributes) {
             this.buildFormattedParagraphs(paragraph, doc);
-        // no paragraph formatting
+            // no paragraph formatting
         } else {
             this.resetLevelTrackers();
             this.buildSimpleParagraphs(paragraph, doc);
@@ -71,15 +82,19 @@ class PdfBuilder {
     }
 
     // handles video and image embeds
-    buildEmbed(embed: InsertEmbed, doc: any) {
+    async buildEmbed(embed: InsertEmbed, doc: any) {
         doc.moveDown();
         if (embed.image) {
-            doc.image(embed.image, { fit: [200, 200], align: 'center' });
+            let image;
+            if (embed.image.startsWith("https://") || embed.image.startsWith("http://")) {
+                image = await this.getBase64ImageFromUrl(embed.image)
+            }
+            doc.image(image || embed.image, 0 ,0, { width: doc.page.width });
         } else if (embed.video) {
             doc.font(this.style.normal.font);
             doc.fontSize(this.style.normal.fontSize);
             doc.fillColor('blue');
-            doc.text(embed.video, this.style.normal.baseIndent ? this.style.normal.baseIndent :  72, null, {
+            doc.text(embed.video, this.style.normal.baseIndent ? this.style.normal.baseIndent : 72, null, {
                 underline: false,
                 strike: false,
                 oblique: false,
@@ -310,7 +325,7 @@ class PdfBuilder {
     };
 
 
-    // *** SET UP AND CONFIGURATION ***
+    /*** SET UP AND CONFIGURATION ***/
 
     // prepares the input data to be processed by the pdf builder
     prepareInput(delta: RawOrParsedDelta): ParsedQuillDelta[] {
@@ -373,7 +388,7 @@ class PdfBuilder {
     }
 
 
-    // *** HELPERS FOR ORDERED LISTS ***
+    /*** HELPERS FOR ORDERED LISTS ***/
 
     // resets ordered list back to original state (all levels at 0)
     resetLevelTrackers(): void {
@@ -407,6 +422,25 @@ class PdfBuilder {
         let listIndicator = this.listIndicators[level][this.levelTrackers[level]];
         this.updateLevelTrackers(level);
         return listIndicator;
+    }
+
+    /***  HELPERS FORM IMAGES ***/
+
+    async getBase64ImageFromUrl(imageUrl: string): Promise< string | ArrayBuffer> {
+        const res = await fetch(imageUrl);
+        const blob = await res.blob();
+
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.addEventListener("load", function () {
+                if(reader.result) resolve(reader.result);
+            }, false);
+
+            reader.onerror = () => {
+                return reject(this);
+            };
+            reader.readAsDataURL(blob);
+        })
     }
 
 }

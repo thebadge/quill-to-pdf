@@ -7,8 +7,12 @@ import { parseQuillDelta } from 'quilljs-parser';
 import PDFDocument from './pdfkit.standalone';
 import { FakeStream, MockPDFDocument } from './test-utilities';
 
+type TypePDFDocument = typeof PDFDocument & {
+    new (...args: any[]): any;
+};
+
 // create a type safe version of the PDFDocument mock from pdfkit
-const mockPdfKit = PDFDocument as jest.MockedClass<typeof PDFDocument>;
+const mockPdfKit = PDFDocument as jest.MockedClass<TypePDFDocument>;
 // mock the return value of the PDFDocument constructor
 mockPdfKit.mockReturnValue(new MockPDFDocument() as any);
 // create a type safe version of the parseQuillDelta function from quilljs parser
@@ -119,7 +123,7 @@ describe('PdfBuilder', () => {
                     }]
                 }]
             }];
-            const buildSpy = jest.spyOn(builder, 'buildParagraph').mockImplementation(() => true);
+            const buildSpy = jest.spyOn(builder, 'buildParagraph').mockImplementation(() => new Promise<void>(() => {}));
             builder.buildPdf(fakeDeltas, 'doc');
             expect(buildSpy).toHaveBeenCalledWith({
                 textRuns: [{
@@ -161,7 +165,7 @@ describe('PdfBuilder', () => {
                     video: 'video'
                 }
             };
-            const buildEmbedSpy = jest.spyOn(builder, 'buildEmbed').mockImplementationOnce(() => null);
+            const buildEmbedSpy = jest.spyOn(builder, 'buildEmbed').mockImplementationOnce(() => new Promise<void>(() => {}));
             const resetSpy = jest.spyOn(builder, 'resetLevelTrackers');
             builder.buildParagraph(mockPara, mockDoc);
             expect(resetSpy).toHaveBeenCalled();
@@ -225,7 +229,7 @@ describe('PdfBuilder', () => {
             builder.buildEmbed(embed, mockDoc);
             expect(fontSpy).toHaveBeenCalledWith('Times-Roman');
             expect(sizeSpy).toHaveBeenCalledWith(12);
-            expect(textSpy).toHaveBeenCalledWith('linktovideo', 72, null, { 
+            expect(textSpy).toHaveBeenCalledWith('linktovideo', 72, null, {
                 link: 'linktovideo',
                 underline: false,
                 strike: false,

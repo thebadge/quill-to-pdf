@@ -6,7 +6,11 @@ import { DocMethods, DocRecord, MockPDFDocument } from "./test-utilities";
 import { default as exporter } from "./pdf-exporter";
 import { Config } from "./interfaces";
 
-const mockPdfKit = PDFDocument as jest.MockedClass<typeof PDFDocument>;
+type TypePDFDocument = typeof PDFDocument & {
+  new (...args: any[]): any;
+};
+
+const mockPdfKit = PDFDocument as jest.MockedClass<TypePDFDocument>;
 
 let mockDoc: MockPDFDocument;
 
@@ -1457,7 +1461,7 @@ describe("parsed deltas", () => {
         },{
             textRuns: [{
                 text: 'This is level three, first point (restart).'
-            }], 
+            }],
             attributes: {
                 list: 'ordered',
                 indent: 2
@@ -2074,7 +2078,7 @@ describe("parsed deltas", () => {
             header_1: {
                 font: 'Times-Roman',
                 fontSize: 24,
-                levelIndent: 25, 
+                levelIndent: 25,
                 baseIndent: 72
             }
         }
