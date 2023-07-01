@@ -1,6 +1,8 @@
-![npm](https://img.shields.io/npm/v/quill-to-pdf) ![Travis (.com)](https://img.shields.io/travis/com/andrewraygilbert/quill-to-pdf) ![GitHub last commit](https://img.shields.io/github/last-commit/andrewraygilbert/quill-to-pdf) ![npm](https://img.shields.io/npm/dm/quill-to-pdf) ![GitHub issues](https://img.shields.io/github/issues/andrewraygilbert/quill-to-pdf) ![NPM](https://img.shields.io/npm/l/quill-to-pdf)
+![npm](https://img.shields.io/npm/v/@thebadge/quill-to-pdf) ![Travis (.com)](https://img.shields.io/travis/com/thebadge/quill-to-pdf) ![GitHub last commit](https://img.shields.io/github/last-commit/thebadge/quill-to-pdf) ![npm](https://img.shields.io/npm/dm/@thebadge/quill-to-pdf) ![GitHub issues](https://img.shields.io/github/issues/thebadge/quill-to-pdf) ![NPM](https://img.shields.io/npm/l/@thebadge/quill-to-pdf)
 
 # QuillToPDF
+
+> This is a fork from the original QuillToPDF maintained by TheBadge team to be used on orw own app. Feel free to use it.
 
 **Simple Description**: Turn the content of your QuillJS editor into a downloadable PDF document.
 
@@ -12,7 +14,7 @@ Check out a live demo on [StackBlitz](https://stackblitz.com/edit/quill-to-pdf-d
 
 Install using npm:
 
-`npm i quill-to-pdf --save`
+`npm i @thebadge/quill-to-pdf --save`
 
 ## How Do I Use It?
 
@@ -32,7 +34,7 @@ const pdfBase64String = await pdfExporter.generatePdfBase64(quillDelta);
 
 The `quillInstance` refers to the object created by `new Quill()`. The `pdfExporter` refers to the default export of the `quill-to-pdf` package, which can be imported as follows: 
 
-`import { pdfExporter } from 'quill-to-pdf';`
+`import { pdfExporter } from '@thebadge/quill-to-pdf';`
 
 ## What Does the Package Do?
 
@@ -58,7 +60,7 @@ Here is a brief example of how to download the PDF document from the browser.
 
 ```javascript
 import { saveAs } from 'file-saver';
-import { pdfExporter } from 'quill-to-pdf';
+import { pdfExporter } from '@thebadge/quill-to-pdf';
 import * as quill from 'quilljs';
 
 // Here is your Quill editor instance
